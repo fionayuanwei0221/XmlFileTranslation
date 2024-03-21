@@ -23,11 +23,16 @@ jobs:
           
       - name:  Disable  CI  
         run:  echo  "CI=false" >> $GITHUB_ENV
+      
+      - name: Set up Node js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.11.1'
+          
       - uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
-          node: 20      
       
       - name: Build And Deploy
         id: builddeploy
