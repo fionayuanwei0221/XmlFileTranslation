@@ -15,13 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - name:  Disable  CI  
-      - run:  echo  "CI=false" >> $GITHUB_ENV
+      - name: Change Ownership of .git Directory
+        run: |
+          sudo chown -R $USER:$USER .git/      
       
       - uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
+      -  name:  Disable  CI  
+      - run:  echo  "CI=false" >> $GITHUB_ENV     
           
       - name: Build And Deploy
         id: builddeploy
