@@ -22,10 +22,12 @@ jobs:
           chmod -R 777 .  # Change permissions as necessary
       -  name:  Disable  CI  
       - run:  echo  "CI=false" >> $GITHUB_ENV
+      
       - uses: actions/checkout@v4
         with:
           submodules: true
           lfs: false
+          
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
