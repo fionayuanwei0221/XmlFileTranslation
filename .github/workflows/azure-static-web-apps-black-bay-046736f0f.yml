@@ -15,11 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name:  Disable  CI  
-      - run:  echo  "CI=false" >> $GITHUB_ENV
     
       - uses: actions/checkout@v4
         with:
