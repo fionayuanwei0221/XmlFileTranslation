@@ -25,7 +25,6 @@ export class TranslationService {
     return this.http.delete<any>(`${this.apiUrl}/DeleteFile/${fileId}`);
   }
 
-  //translateFile(sourceLanguage: string, targetLanguage: string, text: string): Observable<any> {
   translateFile(fileId: string): Observable<any> {
     // Implement translation API call logic here
     const url = `${this.apiUrl}/TranslateFile`;
