@@ -31,6 +31,10 @@ jobs:
           app_location: "/" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "" # Built app content directory - optional
+          ###### Build Preset Configuration ######
+          build:
+            publish_dir: "dist" # The directory containing the built application files
+            output_dir: "dist" # The directory where the built application files will be placed after the build process
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
