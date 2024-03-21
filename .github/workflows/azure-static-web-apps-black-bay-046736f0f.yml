@@ -15,12 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:      
-      
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-          lfs: false    
-          
       - name: Set User Configurations
         run: |
           git config --global user.name "fionayuanwei0221"
@@ -29,6 +23,11 @@ jobs:
           
       - name:  Disable  CI  
         run:  echo  "CI=false" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: false
+          node: 20      
       
       - name: Build And Deploy
         id: builddeploy
