@@ -1,0 +1,94 @@
+<p>translation works!</p>
+
+<div class="container">
+<div class="language-panel">
+  <div class="language-select">
+    <!-- Source Language Dropdown -->
+    
+      <label for="sourceLanguage" class="form-label">Source Language</label>
+      <select class="form-select" id="sourceLanguage" name="sourceLanguage" [(ngModel)]="selectedSourceLanguage">
+        <option value="english">English</option>
+        <option value="spanish">Spanish</option>
+        <option value="french">French</option>
+        <!-- Add more options as needed -->
+      </select>
+    
+  </div>
+  <div class="language-select">
+    <!-- Target Language Dropdown -->
+    
+      <label for="targetLanguage" class="form-label">Target Language</label>
+      <select class="form-select" id="targetLanguage" name="targetLanguage" [(ngModel)]="selectedTargetLanguage">
+        <option value="english">English</option>
+        <option value="spanish">Spanish</option>
+        <option value="french">French</option>
+        <!-- Add more options as needed -->
+      </select>
+    </div>
+  
+</div>
+
+<div class="file-table">
+  <div class="drop-zone" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+    <p>Drag & drop files here or <span class="browse-link" (click)="browseFiles()">browse</span></p>
+  </div>
+  <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" multiple>
+  
+ 
+  <div *ngIf="uploadInProgress">
+    <progress max="100" [value]="uploadProgress"></progress>
+  </div>
+  
+  <table >
+  <thead>
+    <tr>
+      <th>File Id</th>
+      <th>File Name</th>
+      <th>Size</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let keyValue of uploadedFiles | keyvalue">
+      <td>{{ keyValue.key }}</td>
+      <td>{{ uploadedFiles[keyValue.key].name }}</td>
+      <td>{{ uploadedFiles[keyValue.key].size | fileSize }}</td>
+      <td><button (click)="deleteFile(keyValue.key)">Delete</button></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div class="translate-button-container">
+  <button class="translate-button" (click)="translateFiles()">Translate Files</button>
+</div>
+
+<div class="file-table">
+  <table >
+    <thead>
+      <tr>
+        <th>File Id</th>
+        <th>File Name</th>
+        <th>Target Language</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let keyValue of translatedFiles | keyvalue">
+        <td>{{ keyValue.key }}</td>
+        <td>{{ translatedFiles[keyValue.key].fileName }}</td>
+        <td>Chinese</td>
+        <td>
+          <!-- View -->
+          <img src="assets/images/view.jfif" alt="View Image" (click)="viewFile(keyValue.key)" class="cell-image bi bi-eye bi-sm text-primary icon-with-tooltip"
+          data-bs-toggle="tooltip" data-bs-placement="top" title="Open file">
+
+          <!-- Download -->
+          <img src="assets/images/download.jfif" alt="Download Image" (click)="downloadFile(keyValue.key)" class="cell-image bi bi-eye bi-sm text-primary icon-with-tooltip"
+          data-bs-toggle="tooltip" data-bs-placement="top" title="Download file">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
