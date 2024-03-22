@@ -6,10 +6,10 @@
     <!-- Source Language Dropdown -->
     
       <label for="sourceLanguage" class="form-label">Source Language</label>
-      <select class="form-select" id="sourceLanguage" name="sourceLanguage" [(ngModel)]="selectedSourceLanguage">
-        <option value="english">English</option>
-        <option value="spanish">Spanish</option>
-        <option value="french">French</option>
+      <select class="form-select" id="sourceLanguage" name="sourceLanguage" [(ngModel)]="model.sourceLanguage">
+        <option value="English">English</option>
+        <option value="Chinese">Chinese</option>
+        <option value="French">French</option>
         <!-- Add more options as needed -->
       </select>
     
@@ -18,10 +18,10 @@
     <!-- Target Language Dropdown -->
     
       <label for="targetLanguage" class="form-label">Target Language</label>
-      <select class="form-select" id="targetLanguage" name="targetLanguage" [(ngModel)]="selectedTargetLanguage">
-        <option value="english">English</option>
-        <option value="spanish">Spanish</option>
-        <option value="french">French</option>
+      <select class="form-select" id="targetLanguage" name="targetLanguage" [(ngModel)]="model.targetLanguage">
+        <option value="English">English</option>
+        <option value="Chinese">Chinese</option>
+        <option value="French">French</option>
         <!-- Add more options as needed -->
       </select>
     </div>
@@ -60,8 +60,8 @@
 </div>
 <div class="translate-button-container">
   <button class="translate-button" (click)="translateFiles()">Translate Files</button>
+  <span *ngIf="loading === true" class="spinner-border text-primary" role="status" aria-hidden="true" style="margin-left: 5px;"></span>
 </div>
-
 <div class="file-table">
   <table >
     <thead>

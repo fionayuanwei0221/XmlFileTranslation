@@ -1,15 +1,8 @@
 import { Component, ElementRef, Injectable, ViewChild } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { FileSizePipe } from '../../pipe/file-size.pipe';
+import { TranslatedFilesDictionary, LanguageRequestModel, UploadedFilesDictionary } from '../../models/language-request-model';
 
-interface FileData {
-  fileName: string;
-  fileContent: string;
-}
-
-interface TranslatedFilesDictionary {
-  [fileId: string]: FileData; // Assuming the translated file content is a string
-}
 
 @Component({
   selector: 'app-translation',
@@ -21,20 +14,26 @@ interface TranslatedFilesDictionary {
 export class TranslationComponent {
 [x: string]: any;
 
-  constructor(private translationService: TranslationService) { }
-  
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>; //Non-null Assertion Operator (!)
+  loading: boolean;
+  model: LanguageRequestModel;
 
-  selectedSourceLanguage: string = '';
-  selectedTargetLanguage: string = '';
+  constructor(private translationService: TranslationService) {
+     
+    this.loading = false;
+    this.model = {
+      sourceLanguage: 'English',
+      targetLanguage: 'Chinese'
+    }
+    console.log(this.model);
+  };   
+  
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>; //Non-null Assertion Operator (!)  
   
   uploadInProgress = false;
   uploadProgress = 0;
   
-  uploadedFiles: { [fileId: string]: File } = {};
-  //translatedFiles: { [fileId: string]: File } = {};
-
-  translatedFiles: TranslatedFilesDictionary = {};
+  uploadedFiles: UploadedFilesDictionary = {};
+  translatedFiles: TranslatedFilesDictionary = {}; 
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -47,12 +46,9 @@ export class TranslationComponent {
     // you can do this using the non-null assertion operator (!) or a guard clause. 
     
     const files = event.dataTransfer?.files; //optional chaining (?.)
-    if (files){
-      //console.log("Drop");
-      //console.log(files);
+    if (files){    
       this.uploadFiles(files);
-    }
-    
+    }    
   }
 
   browseFiles() {
@@ -62,8 +58,6 @@ export class TranslationComponent {
   onFileSelected(event: Event) {
     const files = (event.target as HTMLInputElement).files;
     if (files){
-      //console.log("Browse");
-      //console.log(files);
       this.uploadFiles(files);
     }    
   }
@@ -84,8 +78,6 @@ export class TranslationComponent {
       this.translationService.uploadFile(formData).subscribe({
         next: (uploadedFileId) => {
           console.log("uploaded successfully");
-          
-          //this.uploadedFiles.push(file);
           console.log("Uploaded file ID:", uploadedFileId); // Check the file_id
           this.uploadedFiles[uploadedFileId] = file;
           console.log("UploadedFiles after assignment:", this.uploadedFiles); // Verify the contents of uploadedFiles
@@ -131,30 +123,10 @@ export class TranslationComponent {
     }
   }
 
-  // deleteFile(file: File) {
-  //   // Find the index of the file in the uploadedFiles array
-  //   const index = this.uploadedFiles.indexOf(file);
-  //   if (index !== -1) {
-  //     // Remove the file from the uploadedFiles array
-  //     this.uploadedFiles.splice(index, 1);
-  //   }
-  // }
-
-  translateFiles() {
-    
-    // const fileIds = Object.keys(this.uploadedFiles);
-
-    // for (let i = 0; i < fileIds.length; i++) {
-    //   const fileId = fileIds[i];
-    //   this.translationService.translateFile(fileId).subscribe({
-    //     next: (translatedFile) => {},
-    //     error: () => {},
-    //     complete: () => {},
-    //   })
-    // }
-
+  translateFiles() { 
+    this.loading = true;    
     // Instead loop in front end, just one call to backend and let backend to translate in parallel
-    this.translationService.translateFiles().subscribe({  //this.translationService.translateFiles(this.targetLanguage)
+    this.translationService.translateFiles(this.model).subscribe({  //this.translationService.translateFiles(this.targetLanguage)
       next: (files) => {
         console.log('File translated from backend successfully');
         this.translatedFiles = files;
@@ -163,7 +135,9 @@ export class TranslationComponent {
       error: (error) => {
         console.error('Error deleting file from backend:', error);
       },
-      complete: ()=> {}
+      complete: ()=> {
+        this.loading = false;
+      }
     })    
   }  
 
