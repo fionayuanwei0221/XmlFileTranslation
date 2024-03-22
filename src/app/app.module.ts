@@ -8,12 +8,14 @@ import { AppComponent } from './app.component';
 import { TranslationComponent } from './features/translation/translation.component';
 import { FileSizePipe } from './pipe/file-size.pipe';
 import { HttpClientModule } from '@angular/common/http';
+import { ComparisonComponent } from './features/comparison/comparison.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TranslationComponent,
-    FileSizePipe
+    FileSizePipe,
+    ComparisonComponent
   ],
   imports: [
     BrowserModule,

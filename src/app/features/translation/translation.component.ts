@@ -2,6 +2,7 @@ import { Component, ElementRef, Injectable, ViewChild } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { FileSizePipe } from '../../pipe/file-size.pipe';
 import { TranslatedFilesDictionary, LanguageRequestModel, UploadedFilesDictionary } from '../../models/language-request-model';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,7 +18,7 @@ export class TranslationComponent {
   loading: boolean;
   model: LanguageRequestModel;
 
-  constructor(private translationService: TranslationService) {
+  constructor(private translationService: TranslationService, private router: Router) {
      
     this.loading = false;
     this.model = {
@@ -142,8 +143,34 @@ export class TranslationComponent {
   }  
 
   viewFile(fileId: string) {
-    this.translatedFiles[fileId].fileContent;
+    // Get the current URL of the home page
+    const currentUrl = window.location.origin;
+    // Construct the URL for the comparison page
+    const comparisonPageUrl = `${currentUrl}/comparison`;
+
+    // const reader = new FileReader();
+    // const originalContent = this.getUploadFileContent(this.uploadedFiles[fileId]);; // Content of the original file
+    // const translatedContent = this.translatedFiles[fileId].fileContent; // Content of the translated file
+
+    // this.router.navigate(['/comparison'], {
+    //   queryParams: {
+    //     originalContent,
+    //     translatedContent
+    //   }
+    // });
+
+    // Open a new window/tab with the comparison page
+    window.open(comparisonPageUrl, '_blank');
   }
+
+  // private getUploadFileContent(file: File){
+  //   const reader = new FileReader();
+  //   reader.onload = () => {
+  //     const fileContent = reader.result as string;
+  //     console.log(fileContent); // This will log the content of the file as a string
+  //   };
+  //   reader.readAsText(file);
+  // }
 
   downloadFile(fileId: string) {
 
