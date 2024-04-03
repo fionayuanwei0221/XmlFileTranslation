@@ -33,6 +33,18 @@
     cursor: pointer;
   }
   
+  .status-uploading {
+    background-color: yellow;
+  }
+  
+  .status-completed {
+    background-color: rgb(76, 236, 223);
+  }
+  
+  .status-failed {
+    background-color: red;
+  }
+
   .browse-link {
     color: blue;
     text-decoration: underline;

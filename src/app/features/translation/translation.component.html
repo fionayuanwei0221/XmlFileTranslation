@@ -1,4 +1,4 @@
-<p>translation works!</p>
+<p>This is for FTView Demo Displays xml file translation!</p>
 
 <div class="container">
 <div class="language-panel">
@@ -33,27 +33,34 @@
     <p>Drag & drop files here or <span class="browse-link" (click)="browseFiles()">browse</span></p>
   </div>
   <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" multiple>
-  
- 
+   
   <div *ngIf="uploadInProgress">
     <progress max="100" [value]="uploadProgress"></progress>
   </div>
-  
+   
   <table >
   <thead>
     <tr>
       <th>File Id</th>
       <th>File Name</th>
       <th>Size</th>
+      <th>Status</th>
       <th>Action</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let keyValue of uploadedFiles | keyvalue">
-      <td>{{ keyValue.key }}</td>
-      <td>{{ uploadedFiles[keyValue.key].fileName }}</td>
-      <td>{{ uploadedFiles[keyValue.key].fileSize | fileSize }}</td>
-      <td><button (click)="deleteFile(keyValue.key)">Delete</button></td>
+    <tr *ngFor="let uploadedFile of uploadedFiles"> <!--use array for uploaded file, becasue we need to show them one by one-->
+      <td>{{ uploadedFile.fileId }}</td>
+      <td>{{ uploadedFile.fileData.fileName }}</td>
+      <td>{{ uploadedFile.fileData.fileSize | fileSize }}</td>
+      <td>
+        <div [ngClass]="{ 'status-uploading': uploadedFile.status === 'Uploading', 
+        'status-completed': uploadedFile.status === 'Completed', 
+        'status-failed': uploadedFile.status === 'Failed' }">
+          {{ uploadedFile.status }}
+        </div>
+      </td>
+      <td><button (click)="deleteFile(uploadedFile.fileId)">Delete</button></td>
     </tr>
   </tbody>
 </table>

@@ -3,8 +3,10 @@ export interface LanguageRequestModel {
     targetLanguage: string;
   }
 
-export interface UploadedFilesDictionary {
-    [fileId: string]: FileData;
+export interface UploadedFile {
+    fileId: string;
+    fileData: FileData;
+    status: string;
 }
 
 export interface FileData {

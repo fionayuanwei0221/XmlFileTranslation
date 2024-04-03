@@ -19,7 +19,7 @@ export class TranslationService {
     //   reportProgress: true,
     //   observe: 'events'
     // })
-    console.log(this.apiUrl);
+    console.log(`${this.apiUrl}/UploadFile`);
     return this.http.post<any>(`${this.apiUrl}/UploadFile`, formData);
   }
   

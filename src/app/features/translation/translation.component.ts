@@ -1,7 +1,7 @@
 import { Component, ElementRef, Injectable, ViewChild } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { FileSizePipe } from '../../pipe/file-size.pipe';
-import { TranslatedFilesDictionary, LanguageRequestModel, UploadedFilesDictionary } from '../../models/language-request-model';
+import { TranslatedFilesDictionary, LanguageRequestModel, UploadedFile } from '../../models/language-request-model';
 import { Router } from '@angular/router';
 
 
@@ -25,15 +25,25 @@ export class TranslationComponent {
       sourceLanguage: 'English',
       targetLanguage: 'Chinese'
     }
-    console.log(this.model);
   };   
   
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>; //Non-null Assertion Operator (!)  
   
   uploadInProgress = false;
-  uploadProgress = 0;
+  uploadProgress = 0;  
   
-  uploadedFiles: UploadedFilesDictionary = {};
+  uploadedFile: UploadedFile = {
+    fileId: '',
+    fileData: {
+      fileName: '', // Provide the actual file name
+      fileSize: 0, // Provide the actual file size
+      fileContent: '' // Provide the actual file content
+    },
+    status: ''
+  };
+
+  uploadedFiles: UploadedFile[] = []; // Array to store uploaded files
+
   translatedFiles: TranslatedFilesDictionary = {}; 
 
   onDragOver(event: DragEvent) {
@@ -68,60 +78,74 @@ export class TranslationComponent {
     const totalSize = Array.from(files).reduce((acc, file) => acc + file.size, 0);
     let uploadedSize = 0;
 
-    //console.log("uploadFiles");
-    console.log(files);
+    this.uploadedFiles = []; // Clear the uploadedFiles array
+    this.translatedFiles = {}; // Clear the translatedFiles dictionary
+
+    console.log("Want to upload files: ", files);
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const formData = new FormData();
       formData.append('file', file);
 
+      // Track the progress of each file upload
+      const fileProgress = {
+        totalSize: file.size,
+        uploadedSize: 0,
+        progress: 0
+      };
+
       this.translationService.uploadFile(formData).subscribe({
-        next: (uploadedFiles) => {
-          console.log("uploaded successfully");
-          console.log("Uploaded file ID:", uploadedFiles);
-          this.uploadedFiles = uploadedFiles;
-          console.log("UploadedFiles after assignment:", this.uploadedFiles); // Verify the contents of uploadedFiles
+        next: (uploadedFile) => {          
+          console.log("Uploaded file ID:", uploadedFile);
+          this.uploadedFile = uploadedFile;
+
+          // Update the status of the uploaded file to 'Completed' in the uploadedFiles dictionary
+          this.uploadedFile.status = 'Completed';       
+          
+          this.uploadedFiles.push(uploadedFile); // Push uploaded file object to the array
+          
+          // Increment uploaded size for the current file
+          uploadedSize += file.size;
+          // Update progress for the current file
+          fileProgress.uploadedSize = file.size;
+          fileProgress.progress = Math.round((fileProgress.uploadedSize / fileProgress.totalSize) * 100);
+          // Update progress for all files
+          this.uploadProgress = Math.round((uploadedSize / totalSize) * 100);
+
+          // Check if all files are uploaded
+          if (i === files.length - 1) {
+            this.uploadInProgress = false;
+          }      
+
+        },
+        error: (error) => {
+          console.error('Error uploading file:', error);
           
           if (i === files.length - 1) {
             this.uploadInProgress = false;
           }
         },
-        error: (error) => {
-          console.error('Error uploading file:', error);
-          if (i === files.length - 1) {
-            this.uploadInProgress = false;
-          }
-        },
         complete: () => {
-          console.log("uploaded files")
-          console.log(this.uploadedFiles)
-          console.log(files);
-          uploadedSize += file.size;
-          this.uploadProgress = Math.round((uploadedSize / totalSize) * 100);
+          console.log("complete: uploaded files")
+          //uploadedSize += file.size;
+          //this.uploadProgress = Math.round((uploadedSize / totalSize) * 100);
         }
       })      
     }
   }
 
   deleteFile(fileId: string) {
-    // Check if the fileId exists in the uploadedFiles dictionary
-    if (this.uploadedFiles[fileId]) {
-      // Remove the file using the fileId as the key
-      delete this.uploadedFiles[fileId];
-
-      // Call backend API to delete the file from the dictionary
-      this.translationService.deleteFile(fileId).subscribe({
-          next: () => {
-            console.log('File deleted from backend successfully');
-          },
-          error: (error) => {
-            console.error('Error deleting file from backend:', error);
-          },
-          complete: ()=> {}
-        }
-      );
-    }
+    this.translationService.deleteFile(fileId).subscribe({
+      next: (response) => {
+        console.log('File deleted successfully:', fileId);
+        // Remove the deleted file from the uploadedFiles array
+        this.uploadedFiles = this.uploadedFiles.filter(file => file.fileId !== fileId);
+      },
+      error: (error) => {
+        console.error('Error deleting file:', error);
+      }
+    });
   }
 
   translateFiles() { 
@@ -129,12 +153,12 @@ export class TranslationComponent {
     // Instead loop in front end, just one call to backend and let backend to translate in parallel
     this.translationService.translateFiles(this.model).subscribe({  //this.translationService.translateFiles(this.targetLanguage)
       next: (files) => {
-        console.log('File translated from backend successfully');
         this.translatedFiles = files;
-        console.log(this.translatedFiles);
+        console.log('File translated from backend successfully:', this.translatedFiles);        
       },
       error: (error) => {
-        //console.error('Error translating file from backend:', error);
+        console.error('Error translating file from backend:', error);
+        this.loading = true;  
       },
       complete: ()=> {
         console.log("complete")
