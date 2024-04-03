@@ -1,4 +1,5 @@
 export const environment = {
     production: true,
-    apiBaseUrl: 'https://filetranslation.azurewebsites.net'
+    //apiBaseUrl: 'https://filetranslation.azurewebsites.net'
+    apiBaseUrl: 'https://filetranslationfrm.azurewebsites.net'    
 }

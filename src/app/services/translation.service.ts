@@ -19,6 +19,7 @@ export class TranslationService {
     //   reportProgress: true,
     //   observe: 'events'
     // })
+    console.log(this.apiUrl);
     return this.http.post<any>(`${this.apiUrl}/UploadFile`, formData);
   }
   
@@ -26,16 +27,16 @@ export class TranslationService {
     return this.http.delete<any>(`${this.apiUrl}/DeleteFile/${fileId}`);
   }
 
-  translateFile(fileId: string): Observable<any> {
-    // Implement translation API call logic here
-    const url = `${this.apiUrl}/TranslateFile`;
-    const body = {
-      //sourceLanguage: sourceLanguage,
-      //targetLanguage: targetLanguage,
-      fileId: fileId
-    };
-    return this.http.post<any>(url, body);
-  }
+  // translateFile(fileId: string): Observable<any> {
+  //   // Implement translation API call logic here
+  //   const url = `${this.apiUrl}/TranslateFile`;
+  //   const body = {
+  //     //sourceLanguage: sourceLanguage,
+  //     //targetLanguage: targetLanguage,
+  //     fileId: fileId
+  //   };
+  //   return this.http.post<any>(url, body);
+  // }
 
   translateFiles(model: LanguageRequestModel): Observable<any> {
     // Implement translation API call logic here
@@ -43,5 +44,9 @@ export class TranslationService {
     console.log(model);
     console.log(url);
     return this.http.post<any>(url, model);
-  }  
+  }
+
+  compareFiles() {
+    
+  }
 }

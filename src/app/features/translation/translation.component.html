@@ -51,8 +51,8 @@
   <tbody>
     <tr *ngFor="let keyValue of uploadedFiles | keyvalue">
       <td>{{ keyValue.key }}</td>
-      <td>{{ uploadedFiles[keyValue.key].name }}</td>
-      <td>{{ uploadedFiles[keyValue.key].size | fileSize }}</td>
+      <td>{{ uploadedFiles[keyValue.key].fileName }}</td>
+      <td>{{ uploadedFiles[keyValue.key].fileSize | fileSize }}</td>
       <td><button (click)="deleteFile(keyValue.key)">Delete</button></td>
     </tr>
   </tbody>

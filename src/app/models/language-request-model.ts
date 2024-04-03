@@ -4,11 +4,12 @@ export interface LanguageRequestModel {
   }
 
 export interface UploadedFilesDictionary {
-    [fileId: string]: File;
+    [fileId: string]: FileData;
 }
 
 export interface FileData {
     fileName: string;
+    fileSize: number;
     fileContent: string;
   }
   

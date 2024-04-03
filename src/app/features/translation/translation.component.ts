@@ -77,10 +77,10 @@ export class TranslationComponent {
       formData.append('file', file);
 
       this.translationService.uploadFile(formData).subscribe({
-        next: (uploadedFileId) => {
+        next: (uploadedFiles) => {
           console.log("uploaded successfully");
-          console.log("Uploaded file ID:", uploadedFileId); // Check the file_id
-          this.uploadedFiles[uploadedFileId] = file;
+          console.log("Uploaded file ID:", uploadedFiles);
+          this.uploadedFiles = uploadedFiles;
           console.log("UploadedFiles after assignment:", this.uploadedFiles); // Verify the contents of uploadedFiles
           
           if (i === files.length - 1) {
@@ -134,9 +134,10 @@ export class TranslationComponent {
         console.log(this.translatedFiles);
       },
       error: (error) => {
-        console.error('Error deleting file from backend:', error);
+        //console.error('Error translating file from backend:', error);
       },
       complete: ()=> {
+        console.log("complete")
         this.loading = false;
       }
     })    
