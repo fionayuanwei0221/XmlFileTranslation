@@ -4,6 +4,12 @@
   align-items: center;
 }
 
+.header {
+  font-size: 24px; /* Adjust the font size as needed */
+  font-weight: bold; /* Make the text bold */
+  /* Add any other styles you want for the header */
+}
+
 .language-panel {
   display: flex;
   justify-content: flex-start; /* Align language panel to the left */
