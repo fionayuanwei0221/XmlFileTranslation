@@ -1,4 +1,4 @@
-<p class="header">FTView Demo Displays xml file translation!</p>
+<p class="header">FTView Demo Displays Xml File Translation!</p>
 
 <div class="container">
 <div class="language-panel">
@@ -75,15 +75,15 @@
       <tr>
         <th>File Id</th>
         <th>File Name</th>
-        <th>Target Language</th>
         <th>Actions</th>
+        <th>Count TM</th>
+        <th>Count MT</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let keyValue of translatedFiles | keyvalue">
         <td>{{ keyValue.key }}</td>
         <td>{{ translatedFiles[keyValue.key].fileName }}</td>
-        <td>Chinese</td>
         <td>
           <!-- View -->
           <!-- Link to the comparison page -->
@@ -97,6 +97,8 @@
           data-bs-toggle="tooltip" data-bs-placement="top" title="Download file">
           
         </td>
+        <td>{{translatedFiles[keyValue.key].countTM}}</td>
+        <td>{{translatedFiles[keyValue.key].countMT}}</td>
       </tr>
     </tbody>
   </table>

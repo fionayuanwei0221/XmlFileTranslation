@@ -13,6 +13,8 @@ export interface FileData {
     fileName: string;
     fileSize: number;
     fileContent: string;
+    countTM: number;
+    countMT: number;
   }
   
 export  interface TranslatedFilesDictionary {

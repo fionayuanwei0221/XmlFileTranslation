@@ -37,7 +37,9 @@ export class TranslationComponent {
     fileData: {
       fileName: '', // Provide the actual file name
       fileSize: 0, // Provide the actual file size
-      fileContent: '' // Provide the actual file content
+      fileContent: '', // Provide the actual file content
+      countTM: 0,
+      countMT: 0
     },
     status: ''
   };

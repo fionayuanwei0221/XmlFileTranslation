@@ -24,6 +24,7 @@
 
 .language-select label {
   margin-right: 10px;
+  white-space: nowrap; /* Ensure label stays on one line */
 }
 
 /* Adjustments for source language selector */
@@ -44,7 +45,7 @@
   }
   
   .status-completed {
-    background-color: rgb(76, 236, 223);
+    background-color: rgb(45, 180, 169);
   }
   
   .status-failed {
