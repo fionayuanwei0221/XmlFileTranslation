@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { LanguageRequestModel } from '../models/language-request-model';
+import { TranslateFilesData } from '../models/language-request-model';
 
 @Injectable({
   providedIn: 'root'
@@ -38,12 +38,12 @@ export class TranslationService {
   //   return this.http.post<any>(url, body);
   // }
 
-  translateFiles(model: LanguageRequestModel): Observable<any> {
+  translateFiles(data: TranslateFilesData): Observable<any> {
     // Implement translation API call logic here
     const url = `${this.apiUrl}/TranslateFiles`;
-    console.log(model);
+    console.log(data);
     console.log(url);
-    return this.http.post<any>(url, model);
+    return this.http.post<any>(url, data);
   }
 
   compareFiles() {

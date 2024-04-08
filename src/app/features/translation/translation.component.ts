@@ -1,7 +1,7 @@
 import { Component, ElementRef, Injectable, ViewChild } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { FileSizePipe } from '../../pipe/file-size.pipe';
-import { TranslatedFilesDictionary, LanguageRequestModel, UploadedFile } from '../../models/language-request-model';
+import { TranslatedFilesDictionary, UploadedFile, TranslateFilesData } from '../../models/language-request-model';
 import { Router } from '@angular/router';
 
 
@@ -16,12 +16,13 @@ export class TranslationComponent {
 [x: string]: any;
 
   loading: boolean;
-  model: LanguageRequestModel;
+  translateFilesData: TranslateFilesData;
 
   constructor(private translationService: TranslationService, private router: Router) {
      
     this.loading = false;
-    this.model = {
+    this.translateFilesData = {
+      fileIds: [],
       sourceLanguage: 'English',
       targetLanguage: 'Chinese'
     }
@@ -152,8 +153,12 @@ export class TranslationComponent {
 
   translateFiles() { 
     this.loading = true;    
+    //this.translateFilesData.fileIds = Object.keys(this.uploadedFiles);
+    // Extract fileId values from uploadedFiles array
+    this.translateFilesData.fileIds = this.uploadedFiles.map(file => file.fileId);
+    console.log("File Ids to translate:" + this.translateFilesData);
     // Instead loop in front end, just one call to backend and let backend to translate in parallel
-    this.translationService.translateFiles(this.model).subscribe({  //this.translationService.translateFiles(this.targetLanguage)
+    this.translationService.translateFiles(this.translateFilesData).subscribe({  //this.translationService.translateFiles(this.targetLanguage)
       next: (files) => {
         this.translatedFiles = files;
         console.log('File translated from backend successfully:', this.translatedFiles);        

@@ -1,7 +1,4 @@
-export interface LanguageRequestModel {
-    sourceLanguage: string;
-    targetLanguage: string;
-  }
+
 
 export interface UploadedFile {
     fileId: string;
@@ -17,7 +14,13 @@ export interface FileData {
     countMT: number;
   }
   
+export  interface TranslateFilesData {
+  fileIds: string[];
+  sourceLanguage: string;
+  targetLanguage: string;
+}
+
 export  interface TranslatedFilesDictionary {
     [fileId: string]: FileData; // Assuming the translated file content is a string
-  }
+}
   
