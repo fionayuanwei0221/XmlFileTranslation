@@ -16,8 +16,8 @@ jobs:
     name: Build and Deploy Job
     steps:
       - name: Remove extra header from Git config
-      run: git config --unset-all http.https://github.com/.extraheader
-
+        run: git config --unset-all http.https://github.com/.extraheader
+        
       - name: Set User Configurations
         run: |
           git config --global user.name "fionayuanwei0221"
