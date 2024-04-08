@@ -1,22 +1,24 @@
-<p class="header">FTView Demo Displays Xml File Translation!</p>
 
-<div class="container">
-<div class="language-panel">
-  <div class="language-select">
-    <!-- Source Language Dropdown -->
-    
+<header class="bg-danger text-white py-4">
+  <div class="container">
+    <h1 class="mb-0">FTView Demo Displays Translation!</h1>
+  </div>
+</header>
+
+<div class="container my-4">
+  <div class="language-panel">
+    <div class="language-select">
+      <!-- Source Language Dropdown -->    
       <label for="sourceLanguage" class="form-label">Source Language</label>
       <select class="form-select" id="sourceLanguage" name="sourceLanguage" [(ngModel)]="translateFilesData.sourceLanguage">
         <option value="English">English</option>
         <option value="Chinese">Chinese</option>
         <option value="French">French</option>
         <!-- Add more options as needed -->
-      </select>
-    
-  </div>
-  <div class="language-select">
-    <!-- Target Language Dropdown -->
-    
+      </select>    
+    </div>
+    <div class="language-select">
+      <!-- Target Language Dropdown -->    
       <label for="targetLanguage" class="form-label">Target Language</label>
       <select class="form-select" id="targetLanguage" name="targetLanguage" [(ngModel)]="translateFilesData.targetLanguage">
         <option value="English">English</option>
@@ -24,9 +26,8 @@
         <option value="French">French</option>
         <!-- Add more options as needed -->
       </select>
-    </div>
-  
-</div>
+    </div> 
+  </div>
 
 <div class="file-table">
   <div class="drop-zone" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
