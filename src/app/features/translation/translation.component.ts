@@ -1,8 +1,6 @@
 import { Component, ElementRef, Injectable, ViewChild } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
-import { FileSizePipe } from '../../pipe/file-size.pipe';
 import { TranslatedFilesDictionary, UploadedFile, TranslateFilesData } from '../../models/language-request-model';
-import { Router } from '@angular/router';
 import { HttpEventType } from '@angular/common/http';
 
 
@@ -21,7 +19,7 @@ export class TranslationComponent {
 
   
 
-  constructor(private translationService: TranslationService, private router: Router) {
+  constructor(private translationService: TranslationService) {
      
     this.loading = false;
     this.translateFilesData = {
@@ -142,6 +140,7 @@ export class TranslationComponent {
 
   // When user clicks 'Translate' button or triggers translation action  
 onTranslateRequest() {  
+  console.log("FonTranslateRequest");
   this.translateFiles(); // Initiates translation request  
   this.listenForTranslationUpdates(); // Starts listening for updates  
 } 

@@ -50,7 +50,7 @@
     <tr *ngFor="let uploadedFile of uploadedFiles"> <!--use array for uploaded file, becasue we need to show them one by one-->
       <td>{{ uploadedFile.fileId }}</td>
       <td>{{ uploadedFile.fileName }}</td>
-      <td>{{ uploadedFile.fileSize | fileSize }}</td>
+      <td>{{ uploadedFile.fileSize }}</td>
       <td>
         <div [ngClass]="{ 
           'status-uploading': uploadedFile.status === 'Uploading', 
@@ -72,7 +72,7 @@
 </table>
 </div>
 <div class="translate-button-container">
-  <button class="translate-button" (click)="translateFiles()">Translate Files</button>
+  <button class="translate-button" (click)="onTranslateRequest()">Translate Files</button>
   <span *ngIf="loading === true" class="spinner-border text-primary" role="status" aria-hidden="true" style="margin-left: 5px;"></span>
 </div>
 <div *ngFor="let fileId of getObjectKeys(translatedFiles)">  
