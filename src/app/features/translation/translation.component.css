@@ -114,3 +114,20 @@
 .icon-with-tooltip {
   font-size: 14px; /* Adjust the size as needed */
 }
+
+.progress-bar-container {  
+  width: 100%;  
+  background-color: #e0e0e0;  
+  border-radius: 4px;  
+}  
+  
+.progress-bar {  
+  height: 20px;  
+  background-color: #4CAF50;  
+  width: 0%; /* Initial width */  
+  border-radius: 4px;  
+  text-align: center;  
+  color: white;  
+  line-height: 20px; /* Align the text vertically */  
+  transition: width 0.4s ease-in-out;  
+}  

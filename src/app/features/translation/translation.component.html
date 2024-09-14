@@ -35,10 +35,6 @@
   </div>
   <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" multiple>
    
-  <div *ngIf="uploadInProgress">
-    <progress max="100" [value]="uploadProgress"></progress>
-  </div>
-   
   <table >
   <thead>
     <tr>
@@ -46,20 +42,29 @@
       <th>File Name</th>
       <th>Size</th>
       <th>Status</th>
+      <th>Progress</th>
       <th>Action</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let uploadedFile of uploadedFiles"> <!--use array for uploaded file, becasue we need to show them one by one-->
       <td>{{ uploadedFile.fileId }}</td>
-      <td>{{ uploadedFile.fileData.fileName }}</td>
-      <td>{{ uploadedFile.fileData.fileSize | fileSize }}</td>
+      <td>{{ uploadedFile.fileName }}</td>
+      <td>{{ uploadedFile.fileSize | fileSize }}</td>
       <td>
-        <div [ngClass]="{ 'status-uploading': uploadedFile.status === 'Uploading', 
-        'status-completed': uploadedFile.status === 'Completed', 
-        'status-failed': uploadedFile.status === 'Failed' }">
+        <div [ngClass]="{ 
+          'status-uploading': uploadedFile.status === 'Uploading', 
+          'status-completed': uploadedFile.status === 'Completed', 
+          'status-failed': uploadedFile.status === 'Failed' 
+          }">
           {{ uploadedFile.status }}
         </div>
+      </td>
+      <td>  
+        <!-- This div acts as the progress bar -->  
+        <div class="progress-bar-container">  
+          <div class="progress-bar" [ngStyle]="{'width': uploadedFile.progress + '%'}"></div>  
+        </div>  
       </td>
       <td><button (click)="deleteFile(uploadedFile.fileId)">Delete</button></td>
     </tr>
@@ -70,6 +75,10 @@
   <button class="translate-button" (click)="translateFiles()">Translate Files</button>
   <span *ngIf="loading === true" class="spinner-border text-primary" role="status" aria-hidden="true" style="margin-left: 5px;"></span>
 </div>
+<div *ngFor="let fileId of getObjectKeys(translatedFiles)">  
+  <div>{{fileId}}: {{translatedFiles[fileId].fileContent}}</div>  
+  <!-- Assuming translatedFile has a 'content' property -->  
+</div>  
 <div class="file-table">
   <table >
     <thead>

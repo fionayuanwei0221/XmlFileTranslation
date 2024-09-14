@@ -2,8 +2,10 @@
 
 export interface UploadedFile {
     fileId: string;
-    fileData: FileData;
+    fileName: string;
+    fileSize: number;
     status: string;
+    progress?: number; // Optional property to track upload progress
 }
 
 export interface FileData {
@@ -23,4 +25,3 @@ export  interface TranslateFilesData {
 export  interface TranslatedFilesDictionary {
     [fileId: string]: FileData; // Assuming the translated file content is a string
 }
-  
