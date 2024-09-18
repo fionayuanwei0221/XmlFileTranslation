@@ -3,8 +3,8 @@ import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { TranslateFilesData } from '../models/language-request-model';
-import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';   
+import { FileData, TranslateFilesData } from '../models/language-request-model';
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';   
 
 
 @Injectable({
@@ -12,8 +12,10 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 })
 export class TranslationService {
 
+  apiUrl: string = `${environment.apiBaseUrl}/api/Translation`;   
+   
   private hubConnection: HubConnection;  
-    private hubUrl: string = '/translationHub'; // Adjust this URL to match your SignalR hub endpoint 
+    private hubUrl: string = 'https://localhost:7098/translationHub'; // Adjust this URL to match your SignalR hub endpoint 
 
     private subject = new Subject<{ fileId: string, translatedFile: any }>(); 
 
@@ -21,6 +23,7 @@ export class TranslationService {
     // Configure and build the SignalR hub connection  
     this.hubConnection = new HubConnectionBuilder()  
     .withUrl(this.hubUrl)  
+    .configureLogging(LogLevel.Information)  
     .build();  
 
   // Start the connection  
@@ -29,9 +32,21 @@ export class TranslationService {
   // Register event handlers  
   this.registerEventHandlers(); 
   }
+  
+  private async startConnection(): Promise<void> {  
+    this.hubConnection.start()  
+    .then(() => console.log('Connection started'))  
+    .catch(err => console.error('Error while starting connection: ' + err));  
+  }  
 
-   apiUrl: string = `${environment.apiBaseUrl}/api/Translation`;   
-   
+  private registerEventHandlers(): void {  
+    this.hubConnection.on('ReceiveFileTranslationStatus', (fileId, translatedFile) => {  
+      console.log("translation service: registerEventHandlers()");
+      this.subject.next({ fileId, translatedFile });  
+    }); 
+      // Add other event handlers as needed  
+  }
+
   
   uploadFile(file: File): Observable<HttpEvent<any>> {
     const formData = new FormData();  
@@ -50,6 +65,7 @@ export class TranslationService {
   }  
 
   translateFiles(data: TranslateFilesData): Observable<any> {
+    console.log("service: translateFiles()");
     // Implement translation API call logic here
     const url = `${this.apiUrl}/TranslateFiles`;
     console.log(data);
@@ -61,36 +77,10 @@ export class TranslationService {
     
   }
 
-  // Assuming you have initialized the SignalR connection somewhere in the service  
-public startListeningForTranslationUpdates(): void {  
-  this.hubConnection.on('ReceiveTranslationStatus', (fileId, translatedFile) => {  
-      this.subject.next({ fileId, translatedFile });  
-  });  
-}  
-
 // Helper method to allow components to subscribe to translation updates  
-public getTranslationUpdates(): Observable<{ fileId: string, translatedFile: any }> {  
+public getTranslationUpdates(): Observable<{ fileId: string, translatedFile: FileData }> {  
+  console.log("service: getTranslationUpdates()");
   return this.subject.asObservable();  
 }  
 
-  private async startConnection(): Promise<void> {  
-    try {  
-        await this.hubConnection.start();  
-        console.log('SignalR Connection successfully started');  
-    } catch (err) {  
-        console.error('Error while starting SignalR connection: ', err);  
-        // Optionally implement a retry logic  
-    }  
-  }  
-
-  private registerEventHandlers(): void {  
-      // Example: Registering an event handler for receiving translation status updates  
-      this.hubConnection.on('ReceiveTranslationStatus', (message: string) => {  
-          console.log('Translation Status: ', message);  
-          // Here, you can implement additional logic to handle the message,  
-          // such as updating the UI or state in your application.  
-      });  
-
-      // Add other event handlers as needed  
-  }
 }

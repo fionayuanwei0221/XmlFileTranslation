@@ -50,7 +50,7 @@
     <tr *ngFor="let uploadedFile of uploadedFiles"> <!--use array for uploaded file, becasue we need to show them one by one-->
       <td>{{ uploadedFile.fileId }}</td>
       <td>{{ uploadedFile.fileName }}</td>
-      <td>{{ uploadedFile.fileSize }}</td>
+      <td>{{ uploadedFile.fileSize | fileSize}}</td>
       <td>
         <div [ngClass]="{ 
           'status-uploading': uploadedFile.status === 'Uploading', 
@@ -75,10 +75,8 @@
   <button class="translate-button" (click)="onTranslateRequest()">Translate Files</button>
   <span *ngIf="loading === true" class="spinner-border text-primary" role="status" aria-hidden="true" style="margin-left: 5px;"></span>
 </div>
-<div *ngFor="let fileId of getObjectKeys(translatedFiles)">  
-  <div>{{fileId}}: {{translatedFiles[fileId].fileContent}}</div>  
-  <!-- Assuming translatedFile has a 'content' property -->  
-</div>  
+
+<!-- Using the getter method to convert dictionary to an array for display -->  
 <div class="file-table">
   <table >
     <thead>
@@ -91,26 +89,27 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let keyValue of translatedFiles | keyvalue">
-        <td>{{ keyValue.key }}</td>
-        <td>{{ translatedFiles[keyValue.key].fileName }}</td>
+      <tr *ngFor="let file of translatedFilesArray">
+        <td>{{ file.fileId }}</td>
+        <td>{{ file.translatedFile.fileName }}</td>
         <td>
           <!-- View -->
-          <!-- Link to the comparison page -->
-          <!-- 
-          <a routerLink="/comparison">View Comparison</a>
-          <img src="assets/images/view.jfif" alt="View Image" (click)="viewFile(keyValue.key)" class="cell-image bi bi-eye bi-sm text-primary icon-with-tooltip"
-          data-bs-toggle="tooltip" data-bs-placement="top" title="Open file">
-          -->
+          <!-- Link to the comparison page --> 
+           <!--          
+          <a routerLink="/comparison">View Comparison</a>--> 
+          <img src="assets/images/view.jfif" alt="View Image" (click)="viewFile(file.fileId)" class="cell-image bi bi-eye bi-sm text-primary icon-with-tooltip"
+          data-bs-toggle="tooltip" data-bs-placement="top" title="View file">
+          
           <!-- Download -->
-          <img src="assets/images/download.jfif" alt="Download Image" (click)="downloadFile(keyValue.key)" class="cell-image bi bi-eye bi-sm text-primary icon-with-tooltip"
+          <img src="assets/images/download.jfif" alt="Download Image" (click)="downloadFile(file.fileId)" class="cell-image bi bi-eye bi-sm text-primary icon-with-tooltip"
           data-bs-toggle="tooltip" data-bs-placement="top" title="Download file">
           
         </td>
-        <td>{{translatedFiles[keyValue.key].countTM}}</td>
-        <td>{{translatedFiles[keyValue.key].countMT}}</td>
+        <td>{{file.translatedFile.countTM}}</td>
+        <td>{{file.translatedFile.countMT}}</td>
       </tr>
     </tbody>
   </table>
 </div>
+
 </div>

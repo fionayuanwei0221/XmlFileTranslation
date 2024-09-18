@@ -1,7 +1,8 @@
 import { Component, ElementRef, Injectable, ViewChild } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
-import { TranslatedFilesDictionary, UploadedFile, TranslateFilesData } from '../../models/language-request-model';
+import { TranslatedFilesDictionary, UploadedFile, TranslateFilesData, FileData } from '../../models/language-request-model';
 import { HttpEventType } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 
 @Component({  
@@ -14,12 +15,11 @@ import { HttpEventType } from '@angular/common/http';
 export class TranslationComponent {
 [x: string]: any;
 
-  loading: boolean;
-  translateFilesData: TranslateFilesData;
+  loading: boolean; 
+  pendingTranslations: Set<string> = new Set(); // Here's the declaration 
+  translateFilesData: TranslateFilesData;  
 
-  
-
-  constructor(private translationService: TranslationService) {
+  constructor(private translationService: TranslationService, private router: Router) {
      
     this.loading = false;
     this.translateFilesData = {
@@ -45,13 +45,8 @@ export class TranslationComponent {
   uploadedFiles: UploadedFile[] = []; // Array to store uploaded files
 
   // for return multiple files that are translated at a time.
-  translatedFiles: TranslatedFilesDictionary = {}; 
-  
-  // Define the getObjectKeys method  
-  getObjectKeys(obj: object): string[] {  
-    return Object.keys(obj);  
-  }  
-  
+  translatedFiles: { [fileId: string]: FileData } = {}; // If you choose to use a dictionary 
+    
   onDragOver(event: DragEvent) {
     event.preventDefault();
   }
@@ -140,14 +135,18 @@ export class TranslationComponent {
 
   // When user clicks 'Translate' button or triggers translation action  
 onTranslateRequest() {  
-  console.log("FonTranslateRequest");
+  console.log("OnTranslateRequest()");
   this.translateFiles(); // Initiates translation request  
   this.listenForTranslationUpdates(); // Starts listening for updates  
 } 
 
   translateFiles() {  
     this.loading = true;      
-    this.translateFilesData.fileIds = this.uploadedFiles.map(file => file.fileId);  
+
+    // Reset or initialize the tracking structure  
+  this.pendingTranslations = new Set(this.uploadedFiles.map(file => file.fileId));
+
+    this.translateFilesData.fileIds = Array.from(this.pendingTranslations);  
     console.log("File Ids to translate:", this.translateFilesData);
   
     // Send the translateFilesData to the backend to start the translation process  
@@ -158,11 +157,11 @@ onTranslateRequest() {
         },  
         error: (error) => {  
             console.error('Error initiating translation process:', error);  
-            this.loading = false;  
+             
         },  
         complete: () => {  
             console.log("Translation request sent.");  
-            // Depending on the backend, you might not do anything here.  
+            // Don't set loading to false here as translations are still pending
         }  
     });  
 }
@@ -175,8 +174,14 @@ listenForTranslationUpdates() {
           this.translatedFiles[fileId] = translatedFile; // Update your local state or model  
           console.log(`File ${fileId} translated and received:`, translatedFile);  
 
-          // If you have a mechanism to detect all files are translated, update loading here  
-          // this.loading = false; // For example, if all expected translations are received  
+          // Remove the fileId from the pending set  
+          this.pendingTranslations.delete(fileId);  
+          
+          // Check if all files are translated  
+          if (this.pendingTranslations.size === 0) {  
+            this.loading = false;  
+            console.log("All files have been translated.");  
+          }  
       },  
       error: (error) => {  
           console.error('Error receiving translation update:', error);  
@@ -188,12 +193,18 @@ listenForTranslationUpdates() {
   });  
 }
   
+get translatedFilesArray() {  
+  return Object.entries(this.translatedFiles).map(([fileId, translatedFile]) => ({  
+    fileId,  
+    translatedFile  
+  }));  
+}
 
   viewFile(fileId: string) {
     // Get the current URL of the home page
     const currentUrl = window.location.origin;
     // Construct the URL for the comparison page
-    const comparisonPageUrl = `${currentUrl}/comparison`;
+    const comparisonPageUrl = `${currentUrl}/comparison?fileId=${fileId}`;
 
     // const reader = new FileReader();
     // const originalContent = this.getUploadFileContent(this.uploadedFiles[fileId]);; // Content of the original file
@@ -208,6 +219,8 @@ listenForTranslationUpdates() {
 
     // Open a new window/tab with the comparison page
     window.open(comparisonPageUrl, '_blank');
+    // If you need to pass the fileId, adjust as needed  
+    //this.router.navigate(['/comparison'], { queryParams: { fileId: fileId } });
   }
 
   // private getUploadFileContent(file: File){
